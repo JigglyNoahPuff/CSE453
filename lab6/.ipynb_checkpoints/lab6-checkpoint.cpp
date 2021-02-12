@@ -18,7 +18,6 @@ bool TestQueryWeak(string);
 bool TestQueryStrong(login_creds);
 void RunWeakProgram();
 void RunStrongProgram();
-string sanitizeInput(string input);
 
 // Simple struct to hold username and password
 struct login_creds {
@@ -54,7 +53,7 @@ bool CaseInsensitiveSearch(string str, string searched_term) {
 // Prompts user for username and password, returns login_creds
 login_creds GetLoginCreds() {
     login_creds creds;
-    login_creds test = { "logan", "pwd" };
+    login_creds test = {"logan", "pwd" };
     cout << "Type username: ";
     getline(cin, creds.username);
     cin.clear();
@@ -87,7 +86,7 @@ bool TestCommentWeak(string query) {
 
 // Tests if a query contains a Union Query attack
 bool TestUnionQueryWeak(string query) {
-    return (!CaseInsensitiveSearch(query, " union ") && !CaseInsensitiveSearch(query, " join "))
+    return (!CaseInsensitiveSearch(query, " union ") && !CaseInsensitiveSearch(query, " join ")) 
         ? false : true;
 }
 
@@ -126,11 +125,10 @@ bool TestQueryStrong(login_creds creds) {
 
 // Start of weak test.
 void RunWeakProgram() {
-    login_creds creds = GetLoginCreds();
-    TestQueryWeak(GenerateQuery(creds)) ?
+    TestQueryWeak(GenerateQuery(GetLoginCreds())) ? 
         cout << "Test passed, valid credentials! \n"
-        :
-        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeInput(creds.username) << "\nSanitized Username: " << sanitizeInput(creds.password) << '\n';
+    :
+        cout << "Test failed, invalid credentials. \n";
 }
 
 // To run the strong program, first it filters the query through TestQueryStrong. If that fails, it
@@ -143,7 +141,7 @@ void RunStrongProgram() {
     }
     else {
         TestQueryWeak(GenerateQuery(creds));
-        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeInput(creds.username) << "\nSanitized Username: " << sanitizeInput(creds.password) << '\n';
+        cout << "Test failed, invalid credentials. \n";
     }
 }
 
@@ -151,10 +149,12 @@ void RunStrongProgram() {
 // Sanitizes the input string if any of the tests detect an error
 string sanitizeInput(string input) {
     string upperInput = input;
-    for (int i = 0; i < input.length(); i++) {
+  for (int i = 0; i < input.length(); i++) {
         upperInput[i] = toupper(upperInput[i]);
     }
-
+    cout << upperInput << endl;
+    cout << input << endl;
+    
     while (upperInput.find(" ") != -1) {
         input.erase(upperInput.find(" "), 1);
         upperInput.erase(upperInput.find(" "), 1);
@@ -162,12 +162,12 @@ string sanitizeInput(string input) {
     while (input.find(';') != -1) {
         input.erase(input.find(';'), 1);
         upperInput.erase(upperInput.find(';'), 1);
-    }
-
+    } 
+    
     while (input.find('-') != -1) {
         input.erase(input.find('-'), 1);
         upperInput.erase(upperInput.find('-'), 1);
-    }
+    } 
 
     while (input.find("/*") != -1) {
         input.erase(input.find("/*"), 2);
@@ -183,7 +183,7 @@ string sanitizeInput(string input) {
         input.erase(upperInput.find(" UNION "), 7);
         upperInput.erase(upperInput.find(" UNION "), 7);
     }*/
-
+    
     return input;
 }
 
@@ -208,6 +208,4 @@ int main()
         else if (input == "exit")
             cout << "Goodbye\n";
     }
-
-    return 0;
-}
+}  
