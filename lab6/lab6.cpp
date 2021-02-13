@@ -23,6 +23,8 @@ void RunWeakProgram();
 void RunStrongProgram();
 void RunTestCases();
 string sanitizeInput(string input);
+string sanitizeUsername(string input);
+string sanitizePassword(string input);
 
 // Simple struct to hold username and password
 struct login_creds {
@@ -134,7 +136,7 @@ void RunWeakProgram() {
     TestQueryWeak(GenerateQuery(creds)) ?
         cout << "Test passed, valid credentials! \n"
         :
-        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeInput(creds.username) << "\nSanitized Username: " << sanitizeInput(creds.password) << '\n';
+        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeUsername(creds.username) << "\nSanitized Username: " << sanitizePassword(creds.password) << '\n';
 }
 
 // To run the strong program, first it filters the query through TestQueryStrong. If that fails, it
@@ -147,7 +149,7 @@ void RunStrongProgram() {
     }
     else {
         TestQueryWeak(GenerateQuery(creds));
-        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeInput(creds.username) << "\nSanitized Username: " << sanitizeInput(creds.password) << '\n';
+        cout << "Test failed, invalid credentials. \nSanitized Username: " << sanitizeUsername(creds.username) << "\nSanitized Username: " << sanitizePassword(creds.password) << '\n';
     }
 }
 
@@ -190,7 +192,7 @@ void RunTestCases() {
             }
             else {
                 TestQueryWeak(GenerateQuery(creds));
-                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeUsername(creds.username) << "\n\tSanitized Password: " << sanitizePassword(creds.password) << '\n';
             }
         }
     }
@@ -215,7 +217,7 @@ void RunTestCases() {
             }
             else {
                 TestQueryWeak(GenerateQuery(creds));
-                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeUsername(creds.username) << "\n\tSanitized Password: " << sanitizePassword(creds.password) << '\n';
             }
         }
     }
@@ -240,7 +242,7 @@ void RunTestCases() {
             }
             else {
                 TestQueryWeak(GenerateQuery(creds));
-                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeUsername(creds.username) << "\n\tSanitized Password: " << sanitizePassword(creds.password) << '\n';
             }
         }
     }
@@ -265,7 +267,7 @@ void RunTestCases() {
             }
             else {
                 TestQueryWeak(GenerateQuery(creds));
-                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeUsername(creds.username) << "\n\tSanitized Password: " << sanitizePassword(creds.password) << '\n';
             }
         }
     }
@@ -290,7 +292,7 @@ void RunTestCases() {
             }
             else {
                 TestQueryWeak(GenerateQuery(creds));
-                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeUsername(creds.username) << "\n\tSanitized Password: " << sanitizePassword(creds.password) << '\n';
             }
         }
     }
@@ -298,28 +300,24 @@ void RunTestCases() {
     return;
 }
 
-// Sanitizes the input string if any of the tests detect an error
-string sanitizeInput(string input) {
-    // Filters out spaces
-    while (input.find(" ") != -1) {
-        input.erase(input.find(" "), 1);
+// Sanitizes the input username string if any of the tests detect an error
+string sanitizeUsername(string input) {
+    for (int i = 0; i < input.length(); i++) {
+        if (!TestValidUsername(input.substr(i, 1))) {
+            input.erase(i, 1);
+            i--;
+        }
     }
-    // Filters out ;
-    while (input.find(';') != -1) {
-    
-        input.erase(input.find(';'), 1);
-    }
-    // Filters out -
-    while (input.find('-') != -1) {
-        input.erase(input.find('-'), 1);
-    }
-    // Filters out /
-    while (input.find("/") != -1) {
-        input.erase(input.find("/"), 1);
-    }
-    // Filters out *
-    while (input.find("*") != -1) {
-        input.erase(input.find("*"), 1);
+    return input;
+}
+
+// Sanitizes the input password string if any of the tests detect an error
+string sanitizePassword(string input) {
+    for (int i = 0; i < input.length(); i++) {
+        if (!TestValidPassword(input.substr(i, 1))) {
+            input.erase(i, 1);
+            i--;
+        }
     }
     return input;
 }
