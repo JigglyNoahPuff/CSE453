@@ -151,7 +151,7 @@ void RunStrongProgram() {
     }
 }
 
-
+// Runs test cases of different sets of usernames and passwords
 void RunTestCases() {
     string input;
     login_creds creds;
@@ -298,7 +298,6 @@ void RunTestCases() {
     return;
 }
 
-
 // Sanitizes the input string if any of the tests detect an error
 string sanitizeInput(string input) {
     string upperInput = input;
@@ -320,30 +319,15 @@ string sanitizeInput(string input) {
         upperInput.erase(upperInput.find('-'), 1);
     }
 
-    while (input.find("/*") != -1) {
-        input.erase(input.find("/*"), 2);
-        upperInput.erase(upperInput.find("/*"), 2);
+    while (input.find("/") != -1) {
+        input.erase(input.find("/"), 1);
+        upperInput.erase(upperInput.find("/"), 1);
     }
-    // Removes instances of " OR " and " Union ", but removing whitespaces should
-    // solve the threat that these words pose.
-    /*if (upperInput.find(" OR ") != -1) {
-        input.erase(upperInput.find(" OR "), 4);
-        upperInput.erase(upperInput.find(" OR "), 4);
-    }*/
-    /*while (upperInput.find(" UNION ") != -1) {
-        input.erase(upperInput.find(" UNION "), 7);
-        upperInput.erase(upperInput.find(" UNION "), 7);
-    }*/
-    // Removes instances of "OR" and "UNION", but removing whitespaces should
-    // solve the threat that these words pose.
-    /*if (upperInput.find("OR") != -1) {
-        input.erase(upperInput.find("OR"), 2);
-        upperInput.erase(upperInput.find("OR"), 2);
-    }*/
-    /*while (upperInput.find("UNION") != -1) {
-        input.erase(upperInput.find("UNION"), 5);
-        upperInput.erase(upperInput.find("UNION"), 5);
-    }*/
+
+    while (input.find("*") != -1) {
+        input.erase(input.find("*"), 1);
+        upperInput.erase(upperInput.find("*"), 1);
+    }
 
     return input;
 }
