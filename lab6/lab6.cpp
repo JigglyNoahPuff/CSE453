@@ -22,7 +22,6 @@ bool TestQueryStrong(login_creds);
 void RunWeakProgram();
 void RunStrongProgram();
 void RunTestCases();
-string sanitizeInput(string input);
 string sanitizeUsername(string input);
 string sanitizePassword(string input);
 
