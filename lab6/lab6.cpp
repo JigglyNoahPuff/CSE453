@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 #include <regex>
+#include<vector>  
 
 using namespace std;
+using std::cout;
+using std::cin;
 
 struct login_creds;
 bool TestValidUsername(string);
@@ -18,6 +21,7 @@ bool TestQueryWeak(string);
 bool TestQueryStrong(login_creds);
 void RunWeakProgram();
 void RunStrongProgram();
+void RunTestCases();
 string sanitizeInput(string input);
 
 // Simple struct to hold username and password
@@ -148,6 +152,153 @@ void RunStrongProgram() {
 }
 
 
+void RunTestCases() {
+    string input;
+    login_creds creds;
+    login_creds test = { "logan", "pwd" };
+    vector<login_creds> validVector;
+    vector<login_creds> tautologyVector;
+    vector<login_creds> unionVector;
+    vector<login_creds> extraStatementVector;
+    vector<login_creds> commentVector;
+    
+    cout << "Running Test Program\n";
+
+    // Ask which tests to run
+    cout << "Which test would you like to run?\n\tOptions:\n\t\tValid\n\t\tTautology\n\t\tUnion\n\t\tAdditional Statement\n\t\tComment\n\t\tAll\n";
+    getline(cin, input);
+    cin.clear();
+
+    if ((input == "Valid") || (input == "All" )) {
+        // Valid Input Tests
+        validVector.push_back({"username", "guessMyPassword"});
+        validVector.push_back({"Jigglyname", "Jigglypassword!"});
+        validVector.push_back({"Tyler", "DeFreitas"});
+        validVector.push_back({"__sqdwrd__", "c1@RIne7"});
+        validVector.push_back({"FireFrog22", "1stick0fgum"});
+        validVector.push_back({"secureUser", "c2VjdXJlUGFzc3dvcmQ"});
+
+        
+        cout << "\nValid Input Tests: \n";
+
+        for (int i = 0; i < validVector.size(); i++) {
+            creds = validVector[i];
+            cout << "Test " << i + 1 << "\n";
+            cout << "\tUsername: " << creds.username << "\n\tPassword: " << creds.password << "\n";
+            if (TestQueryStrong(creds)) {
+                cout << "\tTest passed, valid credentials! \n";
+            }
+            else {
+                TestQueryWeak(GenerateQuery(creds));
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+            }
+        }
+    }
+
+    if ((input == "Tautology") || (input == "All")) {
+        // Tautology Tests
+        tautologyVector.push_back({ "username", "whatever' OR 'a'='a" });
+        tautologyVector.push_back({ "Jigglyname", "Jigglypassword!' OR 1=1" });
+        tautologyVector.push_back({ "spngbb", "qwerty' or 'a'='a';" });
+        tautologyVector.push_back({ "Tyler", "DeFreitas" });
+        tautologyVector.push_back({ "JSmith", "qwerty' or 'a'='a';" });
+        tautologyVector.push_back({ "hackerlvl1", "coolio\' OR 1=1; --" });
+
+        cout << "\nTautology Tests: \n";
+
+        for (int i = 0; i < tautologyVector.size(); i++) {
+            creds = tautologyVector[i];
+            cout << "Test " << i + 1 << "\n";
+            cout << "\tUsername: " << creds.username << "\n\tPassword: " << creds.password << "\n";
+            if (TestQueryStrong(creds)) {
+                cout << "\tTest passed, valid credentials! \n";
+            }
+            else {
+                TestQueryWeak(GenerateQuery(creds));
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+            }
+        }
+    }
+
+    if ((input == "Union") || (input == "All")) {
+        // Union Tests
+        unionVector.push_back({ "username", "password' UNION SELECT * FROM USERS" });
+        unionVector.push_back({ "Jigglyname", "Jigglypassword' UNION SELECT * FROM passwords!" });
+        unionVector.push_back({ "Tyler", "DeFreitas" });
+        unionVector.push_back({ "mrkrbs' FULL OUTER JOIN confidential_info; --", "qwerty" });
+        unionVector.push_back({ "FireFrog22", "fakePass'  UNION SELECT * FROM users" });
+        unionVector.push_back({ "get", "hacked\' UNION SELECT * FROM users; --" });
+
+        cout << "\nUnion Tests: \n";
+
+        for (int i = 0; i < unionVector.size(); i++) {
+            creds = unionVector[i];
+            cout << "Test " << i + 1 << "\n";
+            cout << "\tUsername: " << creds.username << "\n\tPassword: " << creds.password << "\n";
+            if (TestQueryStrong(creds)) {
+                cout << "\tTest passed, valid credentials! \n";
+            }
+            else {
+                TestQueryWeak(GenerateQuery(creds));
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+            }
+        }
+    }
+
+    if ((input == "Additional Statement") || (input == "All")) {
+        // Additional Statement Tests
+        extraStatementVector.push_back({ "username", "something'; INSERT INTO products (product_id, product_name, price) VALUES (nextval(product_sequence), Awesome Sauce', '1.00');, " });
+        extraStatementVector.push_back({ "Jigglyname", "Jigglypassword!'; INSERT INTO passwords (Jigglyname, JigglyPassword);" });
+        extraStatementVector.push_back({ "Tyler", "" });
+        extraStatementVector.push_back({ "mrkrbs' FULL OUTER JOIN confidential_info; --", "qwerty" });
+        extraStatementVector.push_back({ "FireFrog22", "fakePass'  UNION SELECT * FROM users" });
+        extraStatementVector.push_back({ "get", "hacked\' UNION SELECT * FROM users; --" });
+
+        cout << "\nAdditional Statement Tests: \n";
+
+        for (int i = 0; i < extraStatementVector.size(); i++) {
+            creds = extraStatementVector[i];
+            cout << "Test " << i + 1 << "\n";
+            cout << "\tUsername: " << creds.username << "\n\tPassword: " << creds.password << "\n";
+            if (TestQueryStrong(creds)) {
+                cout << "\tTest passed, valid credentials! \n";
+            }
+            else {
+                TestQueryWeak(GenerateQuery(creds));
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+            }
+        }
+    }
+
+    if ((input == "Comment") || (input == "All")) {
+        // Comment Tests aka // Tests
+        commentVector.push_back({ "something' OR USERNAME LIKE 'ryan%';--", "password" });
+        commentVector.push_back({ "Jigglyname'; /*", "Jigglypassword!" });
+        commentVector.push_back({ "Tyler", "DeFreitas" });
+        commentVector.push_back({ "sndychks'; /*", "pwd_removed" });
+        commentVector.push_back({ "admin\'; --", "wrongPass" });
+        commentVector.push_back({ "admin\'; --", "admin" });
+
+        cout << "\nComment Tests: \n";
+
+        for (int i = 0; i < commentVector.size(); i++) {
+            creds = commentVector[i];
+            cout << "Test " << i + 1 << "\n";
+            cout << "\tUsername: " << creds.username << "\n\tPassword: " << creds.password << "\n";
+            if (TestQueryStrong(creds)) {
+                cout << "\tTest passed, valid credentials! \n";
+            }
+            else {
+                TestQueryWeak(GenerateQuery(creds));
+                cout << "\tTest failed, invalid credentials. \n\tSanitized Username: " << sanitizeInput(creds.username) << "\n\tSanitized Username: " << sanitizeInput(creds.password) << '\n';
+            }
+        }
+    }
+
+    return;
+}
+
+
 // Sanitizes the input string if any of the tests detect an error
 string sanitizeInput(string input) {
     string upperInput = input;
@@ -183,9 +334,20 @@ string sanitizeInput(string input) {
         input.erase(upperInput.find(" UNION "), 7);
         upperInput.erase(upperInput.find(" UNION "), 7);
     }*/
+    // Removes instances of "OR" and "UNION", but removing whitespaces should
+    // solve the threat that these words pose.
+    /*if (upperInput.find("OR") != -1) {
+        input.erase(upperInput.find("OR"), 2);
+        upperInput.erase(upperInput.find("OR"), 2);
+    }*/
+    /*while (upperInput.find("UNION") != -1) {
+        input.erase(upperInput.find("UNION"), 5);
+        upperInput.erase(upperInput.find("UNION"), 5);
+    }*/
 
     return input;
 }
+
 
 int main()
 {
@@ -196,15 +358,18 @@ int main()
             << "Type one of the following commands: \n"
             << "To run strong test: strong \n"
             << "To run weak test: weak \n"
+            << "To run test cases: test \n"
             << "To exit program: exit \n"
             << " >>> ";
         cin >> input;
         cin.ignore();
 
-        if (input == "weak")
-            RunWeakProgram();
-        else if (input == "strong")
+        if (input == "strong")
             RunStrongProgram();
+        else if (input == "weak")
+            RunWeakProgram();
+        else if (input == "test")
+            RunTestCases();
         else if (input == "exit")
             cout << "Goodbye\n";
     }
