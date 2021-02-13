@@ -249,7 +249,7 @@ void RunTestCases() {
         // Additional Statement Tests
         extraStatementVector.push_back({ "username", "something'; INSERT INTO products (product_id, product_name, price) VALUES (nextval(product_sequence), Awesome Sauce', '1.00');, " });
         extraStatementVector.push_back({ "Jigglyname", "Jigglypassword!'; INSERT INTO passwords (Jigglyname, JigglyPassword);" });
-        extraStatementVector.push_back({ "Tyler", "" });
+        extraStatementVector.push_back({ "Tyler", "DeFreitas" });
         extraStatementVector.push_back({ "mrkrbs' FULL OUTER JOIN confidential_info; --", "qwerty" });
         extraStatementVector.push_back({ "FireFrog22", "fakePass'  UNION SELECT * FROM users" });
         extraStatementVector.push_back({ "get", "hacked\' UNION SELECT * FROM users; --" });
@@ -272,12 +272,12 @@ void RunTestCases() {
 
     if ((input == "Comment") || (input == "All")) {
         // Comment Tests aka // Tests
-        commentVector.push_back({ "something' OR USERNAME LIKE 'ryan%';--", "password" });
-        commentVector.push_back({ "Jigglyname'; /*", "Jigglypassword!" });
-        commentVector.push_back({ "Tyler", "DeFreitas" });
-        commentVector.push_back({ "sndychks'; /*", "pwd_removed" });
-        commentVector.push_back({ "admin\'; --", "wrongPass" });
-        commentVector.push_back({ "admin\'; --", "admin" });
+        commentVector.push_back({"something' OR USERNAME LIKE 'ryan%';--", "password"});
+        commentVector.push_back({"Jigglyname'; /*", "Jigglypassword!"});
+        commentVector.push_back({"Tyler", "DeFreitas"});
+        commentVector.push_back({"sndychks'; /*", "pwd_removed"});
+        commentVector.push_back({"admin\'; --", "wrongPass"});
+        commentVector.push_back({"admin\'; --", "admin"});
 
         cout << "\nComment Tests: \n";
 
@@ -300,35 +300,27 @@ void RunTestCases() {
 
 // Sanitizes the input string if any of the tests detect an error
 string sanitizeInput(string input) {
-    string upperInput = input;
-    for (int i = 0; i < input.length(); i++) {
-        upperInput[i] = toupper(upperInput[i]);
+    // Filters out spaces
+    while (input.find(" ") != -1) {
+        input.erase(input.find(" "), 1);
     }
-
-    while (upperInput.find(" ") != -1) {
-        input.erase(upperInput.find(" "), 1);
-        upperInput.erase(upperInput.find(" "), 1);
-    }
+    // Filters out ;
     while (input.find(';') != -1) {
+    
         input.erase(input.find(';'), 1);
-        upperInput.erase(upperInput.find(';'), 1);
     }
-
+    // Filters out -
     while (input.find('-') != -1) {
         input.erase(input.find('-'), 1);
-        upperInput.erase(upperInput.find('-'), 1);
     }
-
+    // Filters out /
     while (input.find("/") != -1) {
         input.erase(input.find("/"), 1);
-        upperInput.erase(upperInput.find("/"), 1);
     }
-
+    // Filters out *
     while (input.find("*") != -1) {
         input.erase(input.find("*"), 1);
-        upperInput.erase(upperInput.find("*"), 1);
     }
-
     return input;
 }
 
@@ -347,6 +339,7 @@ int main()
             << " >>> ";
         cin >> input;
         cin.ignore();
+        cout << "\n";
 
         if (input == "strong")
             RunStrongProgram();
