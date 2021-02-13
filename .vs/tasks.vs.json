@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "appliesTo": "lab6/lab6.cpp",
+      "taskLabel": "task-lab6",
+      "type": "launch"
+    }
+  ]
+}

@@ -200,8 +200,8 @@ void RunTestCases() {
         // Tautology Tests
         tautologyVector.push_back({ "username", "whatever' OR 'a'='a" });
         tautologyVector.push_back({ "Jigglyname", "Jigglypassword!' OR 1=1" });
+        tautologyVector.push_back({ "Tyler", "DeFreitas' OR 'True' = 'True;" });
         tautologyVector.push_back({ "spngbb", "qwerty' or 'a'='a';" });
-        tautologyVector.push_back({ "Tyler", "DeFreitas" });
         tautologyVector.push_back({ "JSmith", "qwerty' or 'a'='a';" });
         tautologyVector.push_back({ "hackerlvl1", "coolio\' OR 1=1; --" });
 
@@ -225,7 +225,7 @@ void RunTestCases() {
         // Union Tests
         unionVector.push_back({ "username", "password' UNION SELECT * FROM USERS" });
         unionVector.push_back({ "Jigglyname", "Jigglypassword' UNION SELECT * FROM passwords!" });
-        unionVector.push_back({ "Tyler", "DeFreitas" });
+        unionVector.push_back({ "Tyler", "DeFreitas' UNION SELECT * FROM users;" });
         unionVector.push_back({ "mrkrbs' FULL OUTER JOIN confidential_info; --", "qwerty" });
         unionVector.push_back({ "FireFrog22", "fakePass'  UNION SELECT * FROM users" });
         unionVector.push_back({ "get", "hacked\' UNION SELECT * FROM users; --" });
@@ -250,7 +250,7 @@ void RunTestCases() {
         // Additional Statement Tests
         extraStatementVector.push_back({ "username", "something'; INSERT INTO products (product_id, product_name, price) VALUES (nextval(product_sequence), Awesome Sauce', '1.00');, " });
         extraStatementVector.push_back({ "Jigglyname", "Jigglypassword!'; INSERT INTO passwords (Jigglyname, JigglyPassword);" });
-        extraStatementVector.push_back({ "Tyler", "DeFreitas" });
+        extraStatementVector.push_back({ "Tyler'; INSERT INTO passwords (Tyler, DeFreitas);", "DeFreitas" });
         extraStatementVector.push_back({ "mrkrbs' FULL OUTER JOIN confidential_info; --", "qwerty" });
         extraStatementVector.push_back({ "FireFrog22", "fakePass'  UNION SELECT * FROM users" });
         extraStatementVector.push_back({ "get", "hacked\' UNION SELECT * FROM users; --" });
@@ -275,7 +275,7 @@ void RunTestCases() {
         // Comment Tests aka // Tests
         commentVector.push_back({"something' OR USERNAME LIKE 'ryan%';--", "password"});
         commentVector.push_back({"Jigglyname'; /*", "Jigglypassword!"});
-        commentVector.push_back({"Tyler", "DeFreitas"});
+        commentVector.push_back({"Tyler'; /*", "DeFreitas"});
         commentVector.push_back({"sndychks'; /*", "pwd_removed"});
         commentVector.push_back({"admin\'; --", "wrongPass"});
         commentVector.push_back({"admin\'; --", "admin"});
